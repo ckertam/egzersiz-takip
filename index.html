@@ -124,18 +124,19 @@
 
 <script>
 const WEEKS = 8;
-const ICON = { lift:"🏋️", swim:"🏊", sauna:"🔥", cardio:"🚴", core:"🤸" };
-const accentFor = t => t==="sauna" ? "#F0A15A" : (t==="swim"||t==="lift") ? "#4FCDD9" : "#87ABB1";
+const ICON = { lift:"🏋️", swim:"🏊", sauna:"🔥", cardio:"🚴", core:"🤸", row:"🚣" };
+const accentFor = t => t==="sauna" ? "#F0A15A" : (t==="swim"||t==="lift"||t==="row") ? "#4FCDD9" : "#87ABB1";
 
 const PROGRAM = [
-  { day:"Gün 1", subtitle:"İtiş", ex:[
-    { id:"d1-warm", name:"Isınma — kürek/bisiklet", target:"5 dk hafif", type:"cardio", tip:"Kalbini ısıtacak, konuşabileceğin rahat tempo. Amaç kasları uyandırmak." },
-    { id:"d1-chest", name:"Chest Press", target:"3 × 10-12", start:"5 kg", suggest:5, type:"lift", tip:"Dirsekler hafif içeride, kontrollü it ve geri bırak. Bugün 5 kg ile 3×12 yaptın, buradan devam." },
-    { id:"d1-shoulder", name:"Shoulder Press", target:"3 × 10-12", start:"5-8 kg", suggest:5, type:"lift", tip:"Beli çukurlaştırma, karın sıkı. Dambılları baş hizasından yukarı it." },
-    { id:"d1-triceps", name:"Triceps Pushdown", target:"3 × 12", start:"~10 kg", suggest:10, type:"lift", tip:"Dirsekleri gövdeye yapıştır, sadece ön kolla it." },
+  { day:"Gün 1", subtitle:"Full Body", ex:[
+    { id:"d1-warm", name:"Isınma — hafif kürek/bisiklet", target:"5 dk hafif", type:"cardio", tip:"Kasları uyandır, rahat tempo." },
+    { id:"d1-goblet", name:"Goblet Squat", target:"3 × 12", start:"7.5 kg", suggest:7.5, type:"lift", tip:"Dambılı göğüs hizasında dik tut. Topuklar yerde, sırt düz." },
+    { id:"d1-lat", name:"Lat Pulldown", target:"3 × 12", start:"25 kg", suggest:25, type:"lift", tip:"Barı göğüs üstüne çek, omuzları geriye-aşağıya." },
+    { id:"d1-chest", name:"Chest Press", target:"3 × 12", start:"5 kg", suggest:5, type:"lift", tip:"Dirsekler hafif içeride, kontrollü it ve geri bırak." },
+    { id:"d1-row", name:"Seated Row", target:"3 × 12", start:"20 kg", suggest:20, type:"lift", tip:"Kürek çeker gibi kürek kemiklerini sıkıştır." },
     { id:"d1-plank", name:"Plank", target:"3 × 30 sn", type:"core", tip:"Kalça ne düşsün ne havaya kalksın; karın ve kalça sıkı." },
-    { id:"d1-swim", name:"Yüzme (molalı)", target:"15-20 dk", type:"swim", tip:"50m yüz, kenarda 20-30 sn dinlen, tekrarla." },
-    { id:"d1-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"80-90°C yeterli. Bol su iç, aç karnına girme, baş dönerse hemen çık." },
+    { id:"d1-swim", name:"Yüzme", target:"15-20 dk", type:"swim", tip:"Hafif tempoda, molalı yüz." },
+    { id:"d1-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"Bol su iç, aç karnına girme, baş dönerse çık." },
   ]},
   { day:"Gün 2", subtitle:"Çekiş", ex:[
     { id:"d2-warm", name:"Isınma — rahat yüzme", target:"10 dk", type:"swim", tip:"Yumuşak tempoda, nefesini bulmaya çalış." },
@@ -147,49 +148,52 @@ const PROGRAM = [
     { id:"d2-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"Bol su iç, aç karnına girme, baş dönerse çık." },
   ]},
   { day:"Gün 3", subtitle:"Alt Vücut", ex:[
-    { id:"d3-warm", name:"Isınma — eliptik/bisiklet", target:"5 dk hafif", type:"cardio", tip:"Rahat tempoda kasları ısıt." },
+    { id:"d3-warm", name:"Isınma — yürüyüş bandı/bisiklet", target:"5 dk hafif", type:"cardio", tip:"Rahat tempoda kasları ısıt." },
     { id:"d3-goblet", name:"Goblet Squat", target:"3 × 10-12", start:"7.5 kg", suggest:7.5, type:"lift", tip:"Dambılı göğüs hizasında dik tut. Topuklar yerde, sırt düz. Bugün 7.5 kg ile 3×12 yaptın." },
-    { id:"d3-legpress", name:"Leg Press", target:"3 × 12", start:"~40 kg", suggest:40, type:"lift", tip:"Bacaklar güçlüdür, daha rahat yüklenebilirsin. Dizleri tam kilitleme." },
-    { id:"d3-legcurl", name:"Leg Curl", target:"3 × 12", start:"~15 kg", suggest:15, type:"lift", tip:"Hareketi yavaş kontrol et, sadece bacak arkasıyla çek." },
+    { id:"d3-lunge", name:"Yerinde Lunge / Bulgar Squat (her bacak)", target:"3 × 10", start:"vücut ağırlığı", type:"core", tip:"Az adımla, arka diz yere yaklaşsın ama vurmasın. Zorlanmıyorsan elinle dambıl tut." },
+    { id:"d3-rdl", name:"Romanian Deadlift (dambıl)", target:"3 × 10", start:"6-8 kg", suggest:6, type:"lift", tip:"Sırt düz, kalçadan öne eğil, dizler hafif bükük. Ağırlığı bacağa yakın indir." },
     { id:"d3-calf", name:"Calf Raise", target:"3 × 15", type:"core", tip:"Tam yukarı kalk, tepede 1 sn bekle, kontrollü in." },
     { id:"d3-swim", name:"Yüzme", target:"15-20 dk", type:"swim", tip:"Molalı: 50m yüz, kısa dinlen, tekrarla." },
     { id:"d3-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"Bol su, aç karnına girme, baş dönerse çık." },
   ]},
-  { day:"Gün 4", subtitle:"Toparlanma", ex:[
-    { id:"d4-swim", name:"Molalı Yüzme (6-8 × 50m)", target:"30-40 dk", type:"swim", tip:"Serbest ve kurbağayı karıştır. Her 50m arası 20-30 sn dinlen." },
-    { id:"d4-stretch", name:"Esneme / Mobilite", target:"10 dk", type:"core", tip:"Her esnemede 20-30 sn kal, sıçrama yapma, zorlamadan nefes ver." },
+  { day:"Gün 4", subtitle:"Kürek", ex:[
+    { id:"d4-warm", name:"Isınma — hafif esneme", target:"5 dk", type:"cardio", tip:"Omuz ve kalçayı gevşet, ani hareketten kaçın." },
+    { id:"d4-row", name:"Kürek Makinesi (interval)", target:"15-20 dk", type:"row", tip:"1 dk zorlu (zor konuşacak tempo) / 2 dk rahat tempo, döngü halinde tekrarla. Bacak-sırt-kol birlikte çalışır, iyi kalori yakar." },
+    { id:"d4-deadbug", name:"Dead Bug", target:"3 × 10", type:"core", tip:"Bel yere yapışık kalsın; karşı kol-bacağı yavaşça uzat." },
+    { id:"d4-bicycle", name:"Bicycle Crunch", target:"3 × 15", type:"core", tip:"Hız değil kontrol. Dirsek-diz temasını yavaş yap." },
+    { id:"d4-sideplank", name:"Side Plank (her taraf)", target:"2 × 20 sn", type:"core", tip:"Vücut baştan ayağa düz bir çizgi. Zorsa dizden destek al." },
+    { id:"d4-swim", name:"Hafif Yüzme", target:"10-15 dk", type:"swim", tip:"Rahat tempoda, toparlanma amaçlı." },
     { id:"d4-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"Bol su iç, aç karnına girme, baş dönerse çık." },
   ]},
-  { day:"Gün 5", subtitle:"Full Body", ex:[
-    { id:"d5-warm", name:"Isınma — hafif kürek/bisiklet", target:"5 dk hafif", type:"cardio", tip:"Kasları uyandır, rahat tempo." },
-    { id:"d5-goblet", name:"Goblet Squat", target:"3 × 12", start:"7.5 kg", suggest:7.5, type:"lift", tip:"Dambılı göğüs hizasında dik tut. Topuklar yerde, sırt düz." },
-    { id:"d5-lat", name:"Lat Pulldown", target:"3 × 12", start:"25 kg", suggest:25, type:"lift", tip:"Barı göğüs üstüne çek, omuzları geriye-aşağıya." },
-    { id:"d5-chest", name:"Chest Press", target:"3 × 12", start:"5 kg", suggest:5, type:"lift", tip:"Dirsekler hafif içeride, kontrollü it ve geri bırak." },
-    { id:"d5-row", name:"Seated Row", target:"3 × 12", start:"20 kg", suggest:20, type:"lift", tip:"Kürek çeker gibi kürek kemiklerini sıkıştır." },
+  { day:"Gün 5", subtitle:"İtiş", ex:[
+    { id:"d5-warm", name:"Isınma — kürek/bisiklet", target:"5 dk hafif", type:"cardio", tip:"Kalbini ısıtacak, konuşabileceğin rahat tempo. Amaç kasları uyandırmak." },
+    { id:"d5-chest", name:"Chest Press", target:"3 × 10-12", start:"5 kg", suggest:5, type:"lift", tip:"Dirsekler hafif içeride, kontrollü it ve geri bırak." },
+    { id:"d5-shoulder", name:"Shoulder Press", target:"3 × 10-12", start:"5-8 kg", suggest:5, type:"lift", tip:"Beli çukurlaştırma, karın sıkı. Dambılları baş hizasından yukarı it." },
+    { id:"d5-triceps", name:"Triceps Pushdown", target:"3 × 12", start:"~10 kg", suggest:10, type:"lift", tip:"Dirsekleri gövdeye yapıştır, sadece ön kolla it." },
     { id:"d5-plank", name:"Plank", target:"3 × 30 sn", type:"core", tip:"Kalça ne düşsün ne havaya kalksın; karın ve kalça sıkı." },
-    { id:"d5-swim", name:"Yüzme", target:"15-20 dk", type:"swim", tip:"Hafif tempoda, molalı yüz." },
-    { id:"d5-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"Bol su iç, aç karnına girme, baş dönerse çık." },
+    { id:"d5-swim", name:"Yüzme (molalı)", target:"15-20 dk", type:"swim", tip:"50m yüz, kenarda 20-30 sn dinlen, tekrarla." },
+    { id:"d5-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"80-90°C yeterli. Bol su iç, aç karnına girme, baş dönerse hemen çık." },
   ]},
 ];
 
 const KEY = "workout-tracker-v1";
 let logs = {};
-let day = 4, week = 1, info = null, backupOpen = false;
+let day = 0, week = 1, info = null, backupOpen = false;
 
 function load(){
   try{
     const raw = localStorage.getItem(KEY);
     if(raw){ logs = JSON.parse(raw); return; }
   }catch(e){}
-  // ilk açılış — bugün yaptığın Gün 5 antrenmanı hazır dolu gelsin
+  // ilk açılış — bugün yaptığın Gün 1 antrenmanı hazır dolu gelsin
   logs = {
-    "d5-goblet": {1:"7.5"},
-    "d5-lat": {1:"25"},
-    "d5-chest": {1:"5"},
-    "d5-row": {1:"20"},
-    "d5-plank": {1:true},
-    "d5-swim": {1:true},
-    "d5-sauna": {1:true},
+    "d1-goblet": {1:"7.5"},
+    "d1-lat": {1:"25"},
+    "d1-chest": {1:"5"},
+    "d1-row": {1:"20"},
+    "d1-plank": {1:true},
+    "d1-swim": {1:true},
+    "d1-sauna": {1:true},
   };
   save();
 }
