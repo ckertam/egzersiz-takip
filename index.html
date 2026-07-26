@@ -1,102 +1,337 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Egzersiz Takip</title>
-    <meta name="description" content="Haftada 5 gün antrenman, yüzme ve sauna ile kilo verme ve yağ yakma takip uygulaması" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
-    <meta name="theme-color" content="#0f172a" />
-  </head>
-  <body>
-    <div class="shell">
-      <header class="app-header">
-        <h1>💪 Egzersiz Takip</h1>
-        <p class="subtitle">85 kg → 70 kg · Kilo verme &amp; yağ yakma</p>
-      </header>
-
-      <section class="card" id="progressCard">
-        <div class="progress-head">
-          <span id="progressStartLabel">85 kg</span>
-          <span id="progressGoalLabel">Hedef: 70 kg</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-meta">
-          <span id="progressCurrentLabel">Güncel: 85 kg</span>
-          <span id="progressRemainingLabel">Kalan: 15 kg</span>
-        </div>
-      </section>
-
-      <nav class="tabs" id="tabs">
-        <button class="tab-btn active" data-tab="plan">Plan</button>
-        <button class="tab-btn" data-tab="log">Günlük</button>
-        <button class="tab-btn" data-tab="weight">Kilo</button>
-      </nav>
-
-      <section class="tab-panel" id="panel-plan">
-        <div class="card">
-          <h2>Haftalık Plan</h2>
-          <p class="hint">Koşu yok — makine ağırlıkları + yüzme + sauna. Her antrenman sonrası 15-20 dk hafif yüzme ve sauna ile kapat.</p>
-          <ul class="plan-list" id="planList"></ul>
-        </div>
-      </section>
-
-      <section class="tab-panel hidden" id="panel-log">
-        <div class="card">
-          <h2>Bugünkü Antrenman</h2>
-          <form id="workoutForm">
-            <div id="exerciseRows"></div>
-            <button type="button" class="btn-secondary" id="addExerciseBtn">+ Egzersiz ekle</button>
-
-            <div class="field-row">
-              <label>
-                Yüzme (dk)
-                <input type="number" id="swimMin" min="0" placeholder="15" />
-              </label>
-              <label>
-                Sauna (dk)
-                <input type="number" id="saunaMin" min="0" placeholder="10" />
-              </label>
-            </div>
-
-            <label class="full">
-              Not
-              <input type="text" id="workoutNote" placeholder="opsiyonel" />
-            </label>
-
-            <button type="submit" class="btn-primary">Antrenmanı Kaydet</button>
-          </form>
-        </div>
-
-        <div class="card">
-          <h2>Geçmiş</h2>
-          <div id="workoutHistory" class="history-list"></div>
-        </div>
-      </section>
-
-      <section class="tab-panel hidden" id="panel-weight">
-        <div class="card">
-          <h2>Kilo Ekle</h2>
-          <form id="weightForm">
-            <label class="full">
-              Kilo (kg)
-              <input type="number" step="0.1" id="weightInput" placeholder="84.5" required />
-            </label>
-            <button type="submit" class="btn-primary">Kaydet</button>
-          </form>
-        </div>
-        <div class="card">
-          <h2>Kilo Geçmişi</h2>
-          <div id="weightChart" class="weight-chart"></div>
-          <div id="weightHistory" class="history-list"></div>
-        </div>
-      </section>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<title>Antrenman Defteri</title>
+<meta name="theme-color" content="#08323A" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Antrenman" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Crect width='180' height='180' rx='40' fill='%2308323A'/%3E%3Ctext x='90' y='120' font-size='90' text-anchor='middle'%3E%F0%9F%8F%8B%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' rx='14' fill='%2308323A'/%3E%3Ctext x='32' y='46' font-size='34' text-anchor='middle'%3E%F0%9F%8F%8B%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+<style>
+  :root{
+    --deep:#08323A; --panel:#0E4A56; --panel2:#123F49; --water:#4FCDD9; --waterD:#2A8C99;
+    --ember:#F0A15A; --emberD:#C9703A; --cream:#F3EEE4; --muted:#87ABB1; --line:rgba(255,255,255,.09);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; background:var(--deep); color:var(--cream);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:620px; margin:0 auto; padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 48px);}
+  .eyebrow{font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--water); font-weight:700;}
+  h1{font-size:30px; font-weight:800; letter-spacing:-.02em; margin:2px 0 0; line-height:1;}
+  .sub{color:var(--muted); font-size:12.5px; margin:8px 0 18px; line-height:1.5;}
+  .row-top{display:flex; align-items:flex-end; justify-content:space-between;}
+  .btn{display:inline-flex; align-items:center; gap:5px; border-radius:8px; padding:6px 9px; font-size:11px;
+    cursor:pointer; border:1px solid var(--line); background:transparent; color:var(--muted); font-family:inherit;}
+  .btn svg{width:12px; height:12px;}
+  .btn.on{background:rgba(79,205,217,.14); border-color:var(--waterD); color:var(--water);}
+  .label{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:7px;}
+  .weeks{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;}
+  .wbtn{width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:var(--panel2);
+    color:var(--cream); font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; transition:all .15s;}
+  .wbtn.on{background:var(--water); color:var(--deep); border:1.5px solid var(--water);}
+  .days{display:grid; grid-template-columns:repeat(5,1fr); gap:5px; margin-bottom:18px;}
+  .dbtn{padding:9px 3px; border-radius:10px; border:1px solid var(--line); background:var(--panel2);
+    text-align:center; cursor:pointer; font-family:inherit; transition:all .15s;}
+  .dbtn .dn{font-size:12px; font-weight:800; color:var(--cream);}
+  .dbtn .ds{font-size:8.5px; color:var(--muted); margin-top:2px; line-height:1.2;}
+  .dbtn.on{border:1.5px solid var(--ember); background:rgba(240,161,90,.14);}
+  .dbtn.on .dn{color:var(--ember);}
+  .prog{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+  .bar{flex:1; height:6px; background:var(--panel2); border-radius:99px; overflow:hidden;}
+  .bar>i{display:block; height:100%; background:var(--water); transition:width .3s;}
+  .cnt{font-size:11.5px; color:var(--muted); white-space:nowrap;}
+  .list{display:flex; flex-direction:column; gap:8px;}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:12px 14px; transition:border-color .2s;}
+  .card.sauna{background:rgba(240,161,90,.08);}
+  .head{display:flex; align-items:center; gap:10px;}
+  .ico{width:34px; height:34px; border-radius:9px; flex-shrink:0; display:flex; align-items:center;
+    justify-content:center; background:rgba(255,255,255,.05); font-size:17px;}
+  .nm{flex:1; min-width:0;}
+  .nm .t{font-size:14.5px; font-weight:700; display:flex; align-items:center; gap:6px;}
+  .nm .s{font-size:11.5px; color:var(--muted); margin-top:1px;}
+  .up{color:var(--ember); font-weight:800;}
+  .ibtn{width:30px; height:30px; border-radius:8px; flex-shrink:0; cursor:pointer; display:flex; align-items:center;
+    justify-content:center; border:1px solid var(--line); background:transparent; color:var(--muted); font-weight:800; font-size:14px;}
+  .ibtn.on{color:var(--water); border-color:var(--waterD); background:rgba(255,255,255,.06);}
+  input.kg{width:58px; text-align:center; background:var(--deep); color:var(--cream); border:1px solid var(--line);
+    border-radius:9px; padding:8px 6px; font-size:15px; font-weight:700; outline:none; font-family:inherit;}
+  input.kg.done{border-color:var(--water);}
+  .chk{width:40px; height:40px; border-radius:10px; cursor:pointer; flex-shrink:0; display:flex; align-items:center;
+    justify-content:center; border:1.5px solid var(--line); background:transparent; color:var(--muted); font-size:19px; font-weight:900;}
+  .chk.done{background:var(--accent); border-color:var(--accent); color:var(--deep);}
+  .infobox{margin-top:10px; padding:10px 12px; background:var(--deep); border-radius:10px; border:1px solid var(--line);}
+  .infobox .srow{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; flex-wrap:wrap;}
+  .infobox .srow .sg{font-size:12.5px;}
+  .infobox .srow .sg b{color:var(--water); font-weight:800;}
+  .fill{font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; border:1px solid var(--waterD);
+    background:rgba(79,205,217,.14); color:var(--water); border-radius:8px; padding:5px 10px; font-family:inherit;}
+  .tip{font-size:12px; color:var(--cream); line-height:1.55; opacity:.9;}
+  .strip{display:flex; gap:4px; margin-top:10px;}
+  .cell{flex:1; cursor:pointer; text-align:center; border-radius:6px; padding:3px 0; border:1px solid transparent;}
+  .cell.on{background:rgba(79,205,217,.16); border-color:var(--waterD);}
+  .cell .w{font-size:8.5px; color:var(--muted);}
+  .cell .v{font-size:11px; font-weight:700; color:rgba(255,255,255,.18);}
+  .cell .v.has{color:var(--cream);}
+  .note{margin-top:22px; padding:12px 14px; background:var(--panel2); border-radius:12px; font-size:11.5px; color:var(--muted); line-height:1.6;}
+  .note b{color:var(--cream);}
+  .backup{background:var(--panel); border:1px solid var(--waterD); border-radius:14px; padding:14px; margin-bottom:18px;}
+  .backup h3{font-size:13px; font-weight:800; margin:0 0 4px;}
+  .backup p{font-size:11.5px; color:var(--muted); margin:0 0 12px; line-height:1.5;}
+  textarea{width:100%; height:60px; resize:none; background:var(--deep); color:var(--cream); border:1px solid var(--line);
+    border-radius:9px; padding:9px; font-size:11px; font-family:ui-monospace,monospace; outline:none;}
+  .bbtn{display:inline-flex; align-items:center; gap:6px; margin-top:8px; cursor:pointer; border-radius:9px;
+    padding:8px 12px; font-size:12.5px; font-weight:700; font-family:inherit;}
+  .bbtn.copy{border:1px solid var(--waterD); background:rgba(79,205,217,.14); color:var(--water);}
+  .bbtn.imp{border:1px solid var(--emberD); background:rgba(240,161,90,.16); color:var(--ember);}
+  .divider{height:1px; background:var(--line); margin:16px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row-top">
+    <div>
+      <div class="eyebrow">85 kg → 70 kg · Haftada 5 Gün</div>
+      <h1>Antrenman Defteri</h1>
     </div>
+    <div style="display:flex; gap:6px;">
+      <button class="btn" id="backupToggle" onclick="toggleBackup()">💾 Yedek</button>
+      <button class="btn" onclick="resetAll()">↺ Sıfırla</button>
+    </div>
+  </div>
+  <p class="sub">Koşu yok, düşük etkili kuvvet + yüzme · her gün sauna ile kapanış. Ağırlığını gir, yüzme/saunayı işaretle. (i) ile öneri ve ipucu. <b style="color:var(--water)">Girdiklerin bu cihazda otomatik kaydedilir.</b></p>
 
-    <script type="module" src="./app.js"></script>
-  </body>
+  <div id="backupPanel"></div>
+
+  <div class="label">Hafta</div>
+  <div class="weeks" id="weeks"></div>
+
+  <div class="days" id="days"></div>
+
+  <div class="prog">
+    <div class="bar"><i id="progFill"></i></div>
+    <div class="cnt" id="progCnt"></div>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="note"><b>Not:</b> Önerilen ağırlıklar bugün attığın setlere göre başlangıç noktası. İlk sette 12 tekrar seni son 2-3'te zorluyorsa doğru ağırlıktasın; çok kolaysa artır, form bozuluyorsa azalt.</div>
+</div>
+
+<script>
+const WEEKS = 8;
+const ICON = { lift:"🏋️", swim:"🏊", sauna:"🔥", cardio:"🚴", core:"🤸" };
+const accentFor = t => t==="sauna" ? "#F0A15A" : (t==="swim"||t==="lift") ? "#4FCDD9" : "#87ABB1";
+
+const PROGRAM = [
+  { day:"Gün 1", subtitle:"İtiş", ex:[
+    { id:"d1-warm", name:"Isınma — kürek/bisiklet", target:"5 dk hafif", type:"cardio", tip:"Kalbini ısıtacak, konuşabileceğin rahat tempo. Amaç kasları uyandırmak." },
+    { id:"d1-chest", name:"Chest Press", target:"3 × 10-12", start:"5 kg", suggest:5, type:"lift", tip:"Dirsekler hafif içeride, kontrollü it ve geri bırak. Bugün 5 kg ile 3×12 yaptın, buradan devam." },
+    { id:"d1-shoulder", name:"Shoulder Press", target:"3 × 10-12", start:"5-8 kg", suggest:5, type:"lift", tip:"Beli çukurlaştırma, karın sıkı. Dambılları baş hizasından yukarı it." },
+    { id:"d1-triceps", name:"Triceps Pushdown", target:"3 × 12", start:"~10 kg", suggest:10, type:"lift", tip:"Dirsekleri gövdeye yapıştır, sadece ön kolla it." },
+    { id:"d1-plank", name:"Plank", target:"3 × 30 sn", type:"core", tip:"Kalça ne düşsün ne havaya kalksın; karın ve kalça sıkı." },
+    { id:"d1-swim", name:"Yüzme (molalı)", target:"15-20 dk", type:"swim", tip:"50m yüz, kenarda 20-30 sn dinlen, tekrarla." },
+    { id:"d1-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"80-90°C yeterli. Bol su iç, aç karnına girme, baş dönerse hemen çık." },
+  ]},
+  { day:"Gün 2", subtitle:"Çekiş", ex:[
+    { id:"d2-warm", name:"Isınma — rahat yüzme", target:"10 dk", type:"swim", tip:"Yumuşak tempoda, nefesini bulmaya çalış." },
+    { id:"d2-lat", name:"Lat Pulldown", target:"3 × 10-12", start:"25 kg", suggest:25, type:"lift", tip:"Barı göğüs üstüne çek, omuzları geriye-aşağıya. Bugün 25 kg ile 3×12 yaptın." },
+    { id:"d2-row", name:"Seated Row", target:"3 × 12", start:"20 kg", suggest:20, type:"lift", tip:"Kürek çeker gibi kürek kemiklerini sıkıştır, gövdeyi sallama." },
+    { id:"d2-biceps", name:"Biceps Curl", target:"3 × 12", start:"5-8 kg", suggest:6, type:"lift", tip:"Dirsekler sabit kalsın, sadece ön kol hareket etsin." },
+    { id:"d2-faceppull", name:"Face Pull / Ters Fly", target:"3 × 12", start:"hafif kablo", suggest:8, type:"lift", tip:"Omuzları aşağıda tut, kürek kemiklerini sıkıştırarak çek." },
+    { id:"d2-plank", name:"Plank", target:"3 × 30 sn", type:"core", tip:"Kalça ne düşsün ne havaya kalksın; karın ve kalça sıkı." },
+    { id:"d2-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"Bol su iç, aç karnına girme, baş dönerse çık." },
+  ]},
+  { day:"Gün 3", subtitle:"Alt Vücut", ex:[
+    { id:"d3-warm", name:"Isınma — eliptik/bisiklet", target:"5 dk hafif", type:"cardio", tip:"Rahat tempoda kasları ısıt." },
+    { id:"d3-goblet", name:"Goblet Squat", target:"3 × 10-12", start:"7.5 kg", suggest:7.5, type:"lift", tip:"Dambılı göğüs hizasında dik tut. Topuklar yerde, sırt düz. Bugün 7.5 kg ile 3×12 yaptın." },
+    { id:"d3-legpress", name:"Leg Press", target:"3 × 12", start:"~40 kg", suggest:40, type:"lift", tip:"Bacaklar güçlüdür, daha rahat yüklenebilirsin. Dizleri tam kilitleme." },
+    { id:"d3-legcurl", name:"Leg Curl", target:"3 × 12", start:"~15 kg", suggest:15, type:"lift", tip:"Hareketi yavaş kontrol et, sadece bacak arkasıyla çek." },
+    { id:"d3-calf", name:"Calf Raise", target:"3 × 15", type:"core", tip:"Tam yukarı kalk, tepede 1 sn bekle, kontrollü in." },
+    { id:"d3-swim", name:"Yüzme", target:"15-20 dk", type:"swim", tip:"Molalı: 50m yüz, kısa dinlen, tekrarla." },
+    { id:"d3-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"Bol su, aç karnına girme, baş dönerse çık." },
+  ]},
+  { day:"Gün 4", subtitle:"Toparlanma", ex:[
+    { id:"d4-swim", name:"Molalı Yüzme (6-8 × 50m)", target:"30-40 dk", type:"swim", tip:"Serbest ve kurbağayı karıştır. Her 50m arası 20-30 sn dinlen." },
+    { id:"d4-stretch", name:"Esneme / Mobilite", target:"10 dk", type:"core", tip:"Her esnemede 20-30 sn kal, sıçrama yapma, zorlamadan nefes ver." },
+    { id:"d4-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"Bol su iç, aç karnına girme, baş dönerse çık." },
+  ]},
+  { day:"Gün 5", subtitle:"Full Body", ex:[
+    { id:"d5-warm", name:"Isınma — hafif kürek/bisiklet", target:"5 dk hafif", type:"cardio", tip:"Kasları uyandır, rahat tempo." },
+    { id:"d5-goblet", name:"Goblet Squat", target:"3 × 12", start:"7.5 kg", suggest:7.5, type:"lift", tip:"Dambılı göğüs hizasında dik tut. Topuklar yerde, sırt düz." },
+    { id:"d5-lat", name:"Lat Pulldown", target:"3 × 12", start:"25 kg", suggest:25, type:"lift", tip:"Barı göğüs üstüne çek, omuzları geriye-aşağıya." },
+    { id:"d5-chest", name:"Chest Press", target:"3 × 12", start:"5 kg", suggest:5, type:"lift", tip:"Dirsekler hafif içeride, kontrollü it ve geri bırak." },
+    { id:"d5-row", name:"Seated Row", target:"3 × 12", start:"20 kg", suggest:20, type:"lift", tip:"Kürek çeker gibi kürek kemiklerini sıkıştır." },
+    { id:"d5-plank", name:"Plank", target:"3 × 30 sn", type:"core", tip:"Kalça ne düşsün ne havaya kalksın; karın ve kalça sıkı." },
+    { id:"d5-swim", name:"Yüzme", target:"15-20 dk", type:"swim", tip:"Hafif tempoda, molalı yüz." },
+    { id:"d5-sauna", name:"Sauna", target:"10-15 dk", type:"sauna", tip:"Bol su iç, aç karnına girme, baş dönerse çık." },
+  ]},
+];
+
+const KEY = "workout-tracker-v1";
+let logs = {};
+let day = 4, week = 1, info = null, backupOpen = false;
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){ logs = JSON.parse(raw); return; }
+  }catch(e){}
+  // ilk açılış — bugün yaptığın Gün 5 antrenmanı hazır dolu gelsin
+  logs = {
+    "d5-goblet": {1:"7.5"},
+    "d5-lat": {1:"25"},
+    "d5-chest": {1:"5"},
+    "d5-row": {1:"20"},
+    "d5-plank": {1:true},
+    "d5-swim": {1:true},
+    "d5-sauna": {1:true},
+  };
+  save();
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(logs)); }catch(e){} }
+function val(id, w=week){ return (logs[id] && logs[id][w]!==undefined) ? logs[id][w] : ""; }
+
+function setLog(id, v, noRender){
+  if(!logs[id]) logs[id] = {};
+  if(v==="" || v===false) delete logs[id][week];
+  else logs[id][week] = v;
+  save();
+  if(!noRender) render();
+}
+
+// input yazarken re-render etmeden güncelle (klavye/odak kaybolmasın)
+function onType(el, id){
+  let v = el.value.replace(/[^0-9.,]/g,"");
+  el.value = v;
+  setLog(id, v, true);
+  const cell = document.getElementById("v-"+id+"-"+week);
+  if(cell){ cell.textContent = v || "·"; cell.classList.toggle("has", !!v); }
+  el.classList.toggle("done", !!v);
+  const card = document.getElementById("card-"+id);
+  if(card) card.style.borderColor = v ? accentFor("lift") : "var(--line)";
+  updateProgress();
+}
+
+function toggleCheck(id){ setLog(id, val(id)!=="" ? false : true); }
+function quickFill(id, s){ setLog(id, String(s)); }
+function selWeek(w){ week = w; render(); }
+function selDay(i){ day = i; info = null; render(); }
+function toggleInfo(id){ info = (info===id? null : id); render(); }
+
+function resetAll(){ if(confirm("Tüm kayıtlar silinsin mi? Bu geri alınamaz.")){ logs = {}; save(); render(); } }
+
+function toggleBackup(){ backupOpen = !backupOpen; render(); }
+function copyBackup(){
+  const code = JSON.stringify(logs);
+  navigator.clipboard.writeText(code).then(()=>{
+    const b = document.getElementById("copyBtn"); if(b){ b.textContent="Kopyalandı ✓"; setTimeout(()=>b.textContent="⎘ Kodu kopyala",1500); }
+  }).catch(()=>{ const ta=document.getElementById("expTa"); if(ta){ta.focus(); ta.select();} });
+}
+function doImport(){
+  const ta = document.getElementById("impTa"); if(!ta) return;
+  const t = ta.value.trim(); if(!t) return;
+  try{ const p = JSON.parse(t); if(p && typeof p==="object" && !Array.isArray(p)){ logs=p; save(); backupOpen=false; render(); } else alert("Kod geçersiz görünüyor."); }
+  catch(e){ alert("Kod okunamadı — tam kopyalayıp yapıştırdığından emin ol."); }
+}
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function updateProgress(){
+  const ex = PROGRAM[day].ex;
+  const done = ex.filter(e=> val(e.id)!=="" ).length;
+  document.getElementById("progFill").style.width = (done/ex.length*100)+"%";
+  document.getElementById("progCnt").textContent = done+"/"+ex.length+" · Hafta "+week;
+}
+
+function render(){
+  // weeks
+  document.getElementById("weeks").innerHTML =
+    Array.from({length:WEEKS},(_,i)=>i+1).map(w=>
+      `<button class="wbtn ${w===week?"on":""}" onclick="selWeek(${w})">${w}</button>`).join("");
+
+  // days
+  document.getElementById("days").innerHTML =
+    PROGRAM.map((d,i)=>
+      `<button class="dbtn ${i===day?"on":""}" onclick="selDay(${i})">
+        <div class="dn">${d.day}</div><div class="ds">${esc(d.subtitle)}</div>
+      </button>`).join("");
+
+  // backup panel
+  const bp = document.getElementById("backupPanel");
+  document.getElementById("backupToggle").classList.toggle("on", backupOpen);
+  if(backupOpen){
+    bp.innerHTML = `<div class="backup">
+      <h3>Yedekle / Geri yükle</h3>
+      <p>Bu cihazda zaten otomatik kayıtlı. Yine de başka cihaza taşımak istersen: aşağıdaki kodu kopyala; öbür cihazda alt kutuya yapıştırıp "Geri yükle"ye bas.</p>
+      <div class="label">Yedek kodun</div>
+      <textarea id="expTa" readonly onfocus="this.select()">${esc(JSON.stringify(logs))}</textarea>
+      <button class="bbtn copy" id="copyBtn" onclick="copyBackup()">⎘ Kodu kopyala</button>
+      <div class="divider"></div>
+      <div class="label">Kodu yapıştır</div>
+      <textarea id="impTa" placeholder="Yedek kodunu buraya yapıştır…"></textarea>
+      <button class="bbtn imp" onclick="doImport()">↧ Geri yükle</button>
+    </div>`;
+  } else bp.innerHTML = "";
+
+  // list
+  const ex = PROGRAM[day].ex;
+  document.getElementById("list").innerHTML = ex.map(e=>{
+    const accent = accentFor(e.type);
+    const isLift = e.type==="lift";
+    const cur = val(e.id);
+    const prev = week>1 ? val(e.id, week-1) : "";
+    const up = isLift && cur!=="" && prev!=="" && parseFloat(cur)>parseFloat(prev);
+    const done = cur!=="";
+    const open = info===e.id;
+
+    let control = isLift
+      ? `<input class="kg ${done?"done":""}" inputmode="decimal" value="${esc(cur)}" placeholder="kg"
+           oninput="onType(this,'${e.id}')" />`
+      : `<div class="chk ${done?"done":""}" style="--accent:${accent}" onclick="toggleCheck('${e.id}')">✓</div>`;
+
+    let infobox = open ? `<div class="infobox">
+      ${isLift ? `<div class="srow">
+        <div class="sg">Önerilen başlangıç: <b>${esc(e.start||"")}</b></div>
+        ${e.suggest!==undefined ? `<button class="fill" onclick="quickFill('${e.id}',${e.suggest})">${e.suggest} kg → gir</button>`:""}
+      </div>`:""}
+      <div class="tip">${esc(e.tip)}</div>
+    </div>` : "";
+
+    let strip = isLift ? `<div class="strip">${
+      Array.from({length:WEEKS},(_,i)=>i+1).map(w=>{
+        const v = val(e.id,w);
+        return `<div class="cell ${w===week?"on":""}" onclick="selWeek(${w})">
+          <div class="w">${w}</div>
+          <div class="v ${v?"has":""}" id="v-${e.id}-${w}">${v||"·"}</div>
+        </div>`;
+      }).join("")
+    }</div>` : "";
+
+    return `<div class="card ${e.type==="sauna"?"sauna":""}" id="card-${e.id}" style="border-color:${done?accent:"var(--line)"}">
+      <div class="head">
+        <div class="ico" style="color:${accent}">${ICON[e.type]||"•"}</div>
+        <div class="nm">
+          <div class="t">${esc(e.name)} ${up?'<span class="up">▲</span>':""}</div>
+          <div class="s">${esc(e.target)}${e.start?" · başlangıç: "+esc(e.start):""}</div>
+        </div>
+        <button class="ibtn ${open?"on":""}" onclick="toggleInfo('${e.id}')">i</button>
+        ${control}
+      </div>
+      ${infobox}
+      ${strip}
+    </div>`;
+  }).join("");
+
+  updateProgress();
+}
+
+load();
+render();
+</script>
+</body>
 </html>
